@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using linqpadvisualizer;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 using System;
 using System.Collections.Generic;
@@ -27,29 +27,11 @@ namespace LINQPadVisualizer
     {
         public override void GetData(object inObject, Stream outStream)
         {
-            var serializer = new JsonSerializer();
-            var jsonWriter = new JsonTextWriter(new StreamWriter(outStream));
-            serializer.Error +=
-                (sender, e) =>
-                    {
-                        try
-                        {
-                            string name = e.ErrorContext.Member.ToString();
-                            jsonWriter.WritePropertyName(name);
-                            jsonWriter.WriteValue(e.ErrorContext.Error.ToString());
-
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex);
-                        }
-
-                        e.ErrorContext.Handled = true;
-                    };
-            
-            serializer.Serialize(jsonWriter, inObject);
-            jsonWriter.Flush();
-
+            string s1 = JsonConvert.SerializeObject(inObject);
+            var writer = new StreamWriter(outStream);
+            writer.Write(s1);
+            writer.Flush();
+        
         }
     }
 
@@ -75,9 +57,8 @@ namespace LINQPadVisualizer
             using (Form1 displayForm = new Form1())
             {
                 //displayForm.Text = data.ToString();
-                TextWriter lxw = LINQPad.Util.CreateXhtmlWriter(true);
-                object obj = dynObject.TrackedObject;
-                lxw.Write(obj);
+                var lxw = LINQPad.Util.CreateXhtmlWriter(true, AppConfig.MaxDepth);
+                lxw.Write(dynObject.TrackedObject);
                 displayForm.setHTML(lxw.ToString());
                 windowService.ShowDialog(displayForm);
             }
@@ -97,10 +78,23 @@ namespace LINQPadVisualizer
             visualizerHost.ShowVisualizer();
         }
 
+        public static void DebugShowVisualizer(object objectToVisualize)
+        {
+            string s1 = JsonConvert.SerializeObject(objectToVisualize);
+            JObject jsonObject = JObject.Parse(s1);
+            dynamic dynObject = ConvertJTokenToObject(jsonObject);
+
+            Form1 f = new Form1();
+            var lxw = LINQPad.Util.CreateXhtmlWriter(true, AppConfig.MaxDepth);
+            lxw.Write(dynObject);
+            f.setHTML(lxw.ToString());
+            f.ShowDialog();
+        }
+
 
         // the credit for this code goes to Peter Goodman - http://blog.petegoo.com/archive/2009/10/27/using-json.net-to-eval-json-into-a-dynamic-variable-in.aspx
         // 
-        public object ConvertJTokenToObject(JToken token)
+        public static object ConvertJTokenToObject(JToken token)
         {
             if (token is JValue)
             {
