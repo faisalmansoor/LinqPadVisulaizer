@@ -5,6 +5,11 @@ Forked from https://code.google.com/p/linqpadvisualizer/
 
 This versions adds support to customize object serialization depth.
 
+![Set max depth menu item](/Docs/set-depth-menu.png)
+
+![Set max depth form](/Docs/set-max-depth-dialog.png)
+
+
 
 ## How to Use ##
 These instructions are tested with Visual Studio 2012 and Linqpad 4.55, but, should work for newer visual studio versions as well.
