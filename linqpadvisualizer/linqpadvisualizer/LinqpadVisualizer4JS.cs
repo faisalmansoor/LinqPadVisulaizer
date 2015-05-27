@@ -54,7 +54,7 @@ namespace LINQPadVisualizer
 
             // TODO: Display your view of the object.
             //       Replace displayForm with your own custom Form or Control.
-            using (Form1 displayForm = new Form1())
+            using (MainForm displayForm = new MainForm())
             {
                 //displayForm.Text = data.ToString();
                 var lxw = LINQPad.Util.CreateXhtmlWriter(true, AppConfig.MaxDepth);
@@ -84,7 +84,7 @@ namespace LINQPadVisualizer
             JObject jsonObject = JObject.Parse(s1);
             dynamic dynObject = ConvertJTokenToObject(jsonObject);
 
-            Form1 f = new Form1();
+            MainForm f = new MainForm();
             var lxw = LINQPad.Util.CreateXhtmlWriter(true, AppConfig.MaxDepth);
             lxw.Write(dynObject);
             f.setHTML(lxw.ToString());
